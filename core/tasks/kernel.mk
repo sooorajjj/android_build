@@ -33,8 +33,32 @@ ifneq ($(BOARD_KERNEL_IMAGE_NAME),)
 	TARGET_PREBUILT_INT_KERNEL_TYPE := $(BOARD_KERNEL_IMAGE_NAME)
 	TARGET_PREBUILT_INT_KERNEL := $(KERNEL_OUT)/arch/$(TARGET_ARCH)/boot/$(TARGET_PREBUILT_INT_KERNEL_TYPE)
 else
-	TARGET_PREBUILT_INT_KERNEL := $(KERNEL_OUT)/arch/$(TARGET_ARCH)/boot/zImage
-	TARGET_PREBUILT_INT_KERNEL_TYPE := zImage
+  ifeq ($(TARGET_USES_UNCOMPRESSED_KERNEL),true)
+    TARGET_PREBUILT_INT_KERNEL_TYPE := Image
+  else
+    ifeq ($(TARGET_KERNEL_ARCH),arm64)
+      TARGET_PREBUILT_INT_KERNEL_TYPE := Image.gz
+    else
+      TARGET_PREBUILT_INT_KERNEL_TYPE := zImage
+    endif
+  endif
+endif
+
+TARGET_PREBUILT_INT_KERNEL := $(KERNEL_OUT)/arch/$(KERNEL_ARCH)/boot/$(TARGET_PREBUILT_INT_KERNEL_TYPE)
+
+# Clear this first to prevent accidental poisoning from env
+MAKE_FLAGS :=
+
+ifeq ($(KERNEL_ARCH),arm64)
+  # Avoid "unsupported RELA relocation: 311" errors (R_AARCH64_ADR_GOT_PAGE)
+  MAKE_FLAGS += CFLAGS_MODULE="-fno-pic"
+  ifeq ($(TARGET_ARCH),arm)
+    KERNEL_CONFIG_OVERRIDE := CONFIG_ANDROID_BINDER_IPC_32BIT=y
+  endif
+endif
+
+ifneq ($(TARGET_KERNEL_ADDITIONAL_CONFIG),)
+KERNEL_ADDITIONAL_CONFIG := $(TARGET_KERNEL_ADDITIONAL_CONFIG)
 endif
 
 ## Do be discontinued in a future version. Notify builder about target

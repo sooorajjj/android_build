@@ -10,6 +10,9 @@ endef
 define bt-vendor-set-path-variant
 $(call project-set-path-variant,bt-vendor,TARGET_BT_VENDOR_VARIANT,hardware/qcom/$(1))
 endef
+define gps-hal-set-path-variant
+$(call project-set-path-variant,gps-hal,TARGET_GPS_HAL_PATH,$(1))
+endef
 
 # Set device-specific HALs into project pathmap
 define set-device-specific-path
@@ -73,7 +76,8 @@ $(call set-device-specific-path,LOC_API,loc-api,vendor/qcom/opensource/location)
 $(call ril-set-path-variant,ril)
 $(call wlan-set-path-variant,wlan-caf)
 $(call bt-vendor-set-path-variant,bt-caf)
-
+$(call loc-api-set-path-variant,vendor/qcom/opensource/location)
+$(call gps-hal-set-path-variant,hardware/qcom/gps)
 else
 
 $(call project-set-path,qcom-audio,hardware/qcom/audio/default)
@@ -89,4 +93,6 @@ $(call ril-set-path-variant,ril)
 $(call wlan-set-path-variant,wlan)
 $(call bt-vendor-set-path-variant,bt)
 
+$(call loc-api-set-path-variant,vendor/qcom/opensource/location)
+$(call gps-hal-set-path-variant,hardware/qcom/gps)
 endif

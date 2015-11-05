@@ -160,6 +160,7 @@ include $(BUILD_SYSTEM)/envsetup.mk
 # See envsetup.mk for a description of SCAN_EXCLUDE_DIRS
 FIND_LEAVES_EXCLUDES := $(addprefix --prune=, $(OUT_DIR) $(SCAN_EXCLUDE_DIRS) .repo .git)
 
+-include vendor/extra/BoardConfigExtra.mk
 # The build system exposes several variables for where to find the kernel
 # headers:
 #   TARGET_DEVICE_KERNEL_HEADERS is automatically created for the current
@@ -687,8 +688,5 @@ endif
 # API Level lists for Renderscript Compat lib.
 RSCOMPAT_32BIT_ONLY_API_LEVELS := 8 9 10 11 12 13 14 15 16 17 18 19 20
 RSCOMPAT_NO_USAGEIO_API_LEVELS := 8 9 10 11 12 13
-
-# Rules for QCOM targets
-include $(BUILD_SYSTEM)/qcom_target.mk
 
 include $(BUILD_SYSTEM)/dumpvar.mk
